@@ -6,11 +6,21 @@ const bcrypt = require('bcrypt');
 const _ = require('underscore');
 //declaración de constante para el uso del archivo creado 'usuario.js'
 const Usuario = require('../models/usuario');
-
+//usuando detrusturacion para importar el middleware verificaToken
+const {verificaToken} = require('../middlewares/autenticacion');
+//usuando destructuracion para importar el middleware verificarAdmin
+const {verificaAdmin_Role} = require('../middlewares/autenticacion')
 const app = express();
 
-app.get('/usuario',(req,res) =>{
+app.get('/usuario',verificaToken,(req,res) =>{
 	//res.json('get Usuario');
+	 return res.json({
+	 	usuario: req.usuario,
+	 	nombre: req.usuario.nombre,
+	 	email: req.usuario.email
+	})
+
+
 	let desde = req.query.desde || 0;
 	desde = Number(desde);
 
@@ -37,7 +47,7 @@ app.get('/usuario',(req,res) =>{
 			})
 });
 //peticion post --> crear nuevos registros
-app.post('/usuario',(req,res) =>{
+app.post('/usuario',[verificaToken,verificaAdmin_Role],(req,res) =>{
 	let body = req.body;
 	let usuario = new Usuario({
 		nombre: body.nombre,
@@ -71,7 +81,7 @@ app.post('/usuario',(req,res) =>{
 	}*/	
 });
 //peticion put --> actualizar registros
-app.put('/usuario/:id/'/*para validar el id de un usurio*/,(req,res) =>{
+app.put('/usuario/:id/'/*para validar el id de un usurio*/,[verificaToken,verificaAdmin_Role],(req,res) =>{
 	let id = req.params.id;
 	let body = _.pick(req.body,['nombre','email','img','role','estado']);
 	Usuario.findByIdAndUpdate(id, body, {new: true, runValidators: true}, (err, usuarioDB) => {
@@ -89,7 +99,7 @@ app.put('/usuario/:id/'/*para validar el id de un usurio*/,(req,res) =>{
 	
 });
 //peticion delete --> cambiar el estado de algo
-app.delete('/usuario/:id',(req,res) =>{
+app.delete('/usuario/:id',[verificaToken,verificaAdmin_Role],(req,res) =>{
 	//res.json('delete Usuario');
 	
 	let id = req.params.id;
