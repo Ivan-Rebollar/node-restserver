@@ -40,6 +40,14 @@ if(process.env.NODE_ENV === 'dev'){
 }
 process.env.URLDB= urlDB;
 
+//=================
+// Google Client ID
+//=================
+
+process.env.CLIENT_ID = process.env.CLIENT_ID || '891813379852-dun2qqs56nrac0hr73cl98h9b87q9ie2.apps.googleusercontent.com';
+
+
+
 //comandos
 //heroku config:set <nombreDeVariable>=<asignación_del_url_enmascarado> <-- setar una variable de entorno en heroku
 //heroku config:unset <nombreDeVariable> <-- para borrar la variable de entorno de heroku
