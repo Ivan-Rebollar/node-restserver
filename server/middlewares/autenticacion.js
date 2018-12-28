@@ -10,6 +10,9 @@ const jwt = require('jsonwebtoken');
 let verificaToken = (req,res,next) =>{
 	let token = req.get('token');
 	jwt.verify(token,process.env.SEED,(err,decoded) =>{
+		/*console.log('entro a verificaToken');
+		console.log(`${token}`);
+		console.log(process.env.SEED);*/
 		if(err){
 			return res.status(401).json({
 				ok: false,
